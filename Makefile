@@ -1,16 +1,23 @@
-all: main
+CC=g++
+CFLAGS=-Wall
+SRC_DIR=src
+INCLUDE_DIR=include
+OBJ_DIR=obj
+BIN_DIR=bin
+EXECUTABLE=$(BIN_DIR)/tp0
 
-CXX = clang++
-override CXXFLAGS += -g -Wall -Werror
+SRC_FILES:=$(wildcard $(SRC_DIR)/*.cpp)
 
-SRCS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.cpp' -print | sed -e 's/ /\\ /g')
-HEADERS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.h' -print)
+OBJ_FILES:=$(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_FILES))
 
-main: $(SRCS) $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(SRCS) -o "$@"
+run:$(EXECUTABLE)
+	./$(EXECUTABLE)
 
-main-debug: $(SRCS) $(HEADERS)
-	NIX_HARDENING_ENABLE= $(CXX) $(CXXFLAGS) -O0  $(SRCS) -o "$@"
+$(BIN_DIR)/$(EXECUTABLE):$(OBJ_FILES)
+	$(CC) $(CFLAGS) $(OBJ_FILES) -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CC) $(CFLAGS) -c $< -I$(INCLUDE_DIR) -o $@
 
 clean:
-	rm -f main main-debug
+	rm -f $(OBJ_DIR)/*.o $(BIN_DIR)/$(EXECUTABLE)
