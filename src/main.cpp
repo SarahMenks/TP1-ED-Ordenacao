@@ -1,6 +1,6 @@
+#include "Ordenacao.hpp"
 #include <iostream>
 #include <fstream>
-#include "Pessoa.hpp"
 
 using namespace std;
 
@@ -12,43 +12,44 @@ int main(){
         cout << "Cannot open file" << endl;
         return 1;
     }
-    else {
-        cout << "Abriu" << endl;
-        int tamanho;
-
-        getline(arquivo, tamanho);
-
-        Pessoa p[5];
-
-        //inicializa variaveis aleatorias que vao ajudar na leitura do arquivo
-        string str_temp, nome_temp;
-        int int_temp, cpf_temp;
-        int i, int_temp, cpf_temp;
-    
+    else {        
         
-        while(getline(arquivo, nome_temp)) {
-            str_temp = "";
-            int_temp = 0; 
+        cout << "Arquivo normal:" << endl;
+        Ordenacao ord(arquivo);
+
+        int opcao;
+
+        do{
+            cin >> opcao;
+
+            switch(opcao){
+                case 1:
+                    ord.OrdenaNome();
+                    cout << "Ordenado por nome:" << endl;
+                    ord.ImprimeTudo();
+                break;
+
+                case 2:
+                    ord.OrdenaCPF(0, (ord.tamanho_lista-1));
+                    cout << "Ordenado por CPF:" << endl;
+                    ord.ImprimeTudo();
+                break;
+
+                case 3:
+                    ord.OrdenaEndereco();
+                    cout << "Ordenado por endereco:" << endl;
+                    ord.ImprimeTudo();
+                break;
+
+                default:
+                    cout << "Opcao invalida" << endl;
+                break;
+            }
             
-            for(i=0 ; i < nome_temp.size() ; i++){
-                if(nome_temp[i] != ',')
-                    str_temp += nome_temp[i];
-                else
-                    break;
-            }
-            p->nome = str_temp;
-            cout << p->nome << endl;
-
-            for( ; i < cpf_temp.size() ; i++){
-                if(cpf_temp[i] != ',')
-                    int_temp += cpf_temp[i];
-                else
-                    break;
-            }
-            p->cpf = int_temp;
-            cout << p->cpf << endl;
-
-        }
+        } while(opcao != 0);
+        
+        //fecha o arquivo
+        arquivo.close();
     }
     return 0;
 }

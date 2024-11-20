@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "*.tcc": "cpp"
-    }
+        "*.tcc": "cpp",
+        "fstream": "cpp",
+        "iosfwd": "cpp",
+        "ostream": "cpp"
+    },
+    "C_Cpp.default.compilerPath": "/usr/bin/g++-11"
 }

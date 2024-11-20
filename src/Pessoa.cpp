@@ -2,9 +2,11 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
-Pessoa::Pessoa(){
-    // string nome = a;
-    // int cpf=1;
-    // string endereco=b;
-    // string outros=c;
+
+void Pessoa::imprimePessoa(){
+    cout << "Nome: " << this->nome << endl;
+    cout << "CPF: " << this->cpf << endl;
+    cout << "Endereco: " << this->endereco << endl;
+    cout << "Outros: " << this->outros << endl;
+    cout << "====================" << endl;
 }

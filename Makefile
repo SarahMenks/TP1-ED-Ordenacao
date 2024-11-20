@@ -10,10 +10,10 @@ SRC_FILES:=$(wildcard $(SRC_DIR)/*.cpp)
 
 OBJ_FILES:=$(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC_FILES))
 
-run:$(EXECUTABLE)
+all:$(EXECUTABLE)
 	./$(EXECUTABLE)
 
-$(BIN_DIR)/$(EXECUTABLE):$(OBJ_FILES)
+$(EXECUTABLE): $(OBJ_FILES)
 	$(CC) $(CFLAGS) $(OBJ_FILES) -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp

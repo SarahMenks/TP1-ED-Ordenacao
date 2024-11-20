@@ -7,6 +7,7 @@ struct Pessoa{
     int cpf;
     std::string endereco;
     std::string outros;
-    Pessoa();
+
+    void imprimePessoa();
 };
 #endif
