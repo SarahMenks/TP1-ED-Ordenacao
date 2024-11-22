@@ -8,12 +8,17 @@ Ordenacao::Ordenacao(ifstream &arquivo){
 
         getline(arquivo, tamanho_str);
         this->tamanho_lista = stoi(tamanho_str, nullptr, 10);
-
+        
+        this->indices = new int[this->tamanho_lista];
+        ResetIndices();
+        
         this->p = new Pessoa[this->tamanho_lista];
         CriaPessoas(arquivo);
 }
 
 Ordenacao::~Ordenacao(){
+    delete[] indices;
+    
     delete[] p;
 }
 
@@ -67,54 +72,52 @@ void Ordenacao::CriaPessoas(ifstream &arquivo){
         numPessoa++;
     }
 
-    ImprimeTudo();
+    ImprimeArquivo();
 }
 
-void Ordenacao::OrdenaNome(){
-    //implementação do insertionsort
-    int indice;
+void Ordenacao::InsertionSort(){
+    int posicao;
     string nome_aux;
-    Pessoa aux;
+    int aux;
 
     for(int i = 1 ; i < this->tamanho_lista ; i++){
         //considera o elemento anterior como ordenado
-        aux = this->p[i];
-        nome_aux = this->p[i].nome;
-        indice = (i-1);
+        aux = this->indices[i];
+        nome_aux = this->p[indices[i]].nome;
+        posicao = (i-1);
 
         //se o elemento i for menor que um elemento anterior, troca os dois
-        while(indice >= 0 && nome_aux < this->p[indice].nome){
-            this->p[indice+1] = this->p[indice];
+        while(posicao >= 0 && nome_aux < this->p[indices[posicao]].nome){
+            this->indices[posicao+1] = indices[posicao];
             
-            indice--;
+            posicao--;
         }
 
-        //o loop acima sobrescreve a variavel p[indice+1]. É necessário reatribuir o valor
-        this->p[indice+1] = aux;
+        //o loop acima sobrescreve a variavel indices[posicao+1]. É necessário reatribuir o valor
+        this->indices[posicao+1] = aux;
     }
 }
 
-void Ordenacao::OrdenaCPF(int inicio, int fim){
+void Ordenacao::QuickSort(int inicio, int fim){
     if(inicio >= fim)
         return;
 
-    //implementação do quick sort com mediana de 3
-    
+    //implementação do quick sort com mediana de 3    
     int esquerda = inicio, direita = fim;
 
-    int pivo = media3(p[inicio].cpf, p[(inicio+fim)/2].cpf, p[fim].cpf);
+    int pivo = media3(p[indices[inicio]].cpf, p[indices[(inicio+fim)/2]].cpf, p[indices[fim]].cpf);
 
     while(esquerda <= direita){
-        while(p[esquerda].cpf < pivo)
+        while(p[indices[esquerda]].cpf < pivo)
             (esquerda)++;
         
-        while(p[direita].cpf > pivo)
+        while(p[indices[direita]].cpf > pivo)
             (direita)--;
 
         if(esquerda <= direita){
-            Pessoa temp = p[esquerda];
-            p[esquerda] = p[direita];
-            p[direita] = temp;
+            int temp = indices[esquerda];
+            indices[esquerda] = indices[direita];
+            indices[direita] = temp;
             
             (esquerda)++;
             (direita)--;
@@ -122,10 +125,10 @@ void Ordenacao::OrdenaCPF(int inicio, int fim){
     }
 
     if(inicio < direita)
-        OrdenaCPF(inicio, direita);
+        QuickSort(inicio, direita);
     
     if(esquerda < fim)
-        OrdenaCPF(esquerda, fim);
+        QuickSort(esquerda, fim);
 
 }
 
@@ -152,30 +155,42 @@ int Ordenacao::media3(int a, int b, int c){
     }
 }
 
-void Ordenacao::OrdenaEndereco(){
-
-    //implementação do selection sort
+void Ordenacao::SelectionSort(){
     for(int i = 0 ; i < (this->tamanho_lista - 1) ; i++){
         int indice_menor_num = i;
 
         //busca a posicao do menor numero
         for(int j = (i+1) ; j < this->tamanho_lista ; j++){
-            if(p[j].endereco < p[indice_menor_num].endereco)
+            if(p[indices[j]].endereco < p[indices[indice_menor_num]].endereco)
                 indice_menor_num = j;
         }
 
-        //troca os valores
+        //se o menor numero nao for o atual, troca
         if(indice_menor_num != i){
-            Pessoa temp = p[i];
-            p[i] = p[indice_menor_num];
-            p[indice_menor_num] = temp;
+            int temp = indices[i];
+            indices[i] = indices[indice_menor_num];
+            indices[indice_menor_num] = temp;
         }
     }
 }
 
-void Ordenacao::ImprimeTudo(){
+void Ordenacao::ImprimeArquivo(){
+    cout << "Lista de pessoas:" << endl;
     cout << "====================" << endl;
-    for (int j = 0; j < this->tamanho_lista; j++) {
-        this->p[j].imprimePessoa();
+    for(int i = 0 ; i < this->tamanho_lista ; i++){
+        this->p[i].imprimePessoa();
     }
+}
+
+void Ordenacao::ImprimeOrdenado(){
+    cout << "Lista de pessoas ordenada:" << endl;
+    cout << "====================" << endl;
+    for (int i = 0 ; i < this->tamanho_lista ; i++){
+        this->p[indices[i]].imprimePessoa();
+    }
+}
+
+void Ordenacao::ResetIndices(){
+    for(int i = 0 ; i < this->tamanho_lista ; i++)
+        this->indices[i] = i;
 }

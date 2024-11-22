@@ -23,22 +23,30 @@ int main(){
             cin >> opcao;
 
             switch(opcao){
+                case 0:
+                    break;
+                break;
+
                 case 1:
-                    ord.OrdenaNome();
+                    ord.InsertionSort();
                     cout << "Ordenado por nome:" << endl;
-                    ord.ImprimeTudo();
+                    ord.ImprimeOrdenado();
                 break;
 
                 case 2:
-                    ord.OrdenaCPF(0, (ord.tamanho_lista-1));
+                    ord.QuickSort(0, (ord.tamanho_lista-1));
                     cout << "Ordenado por CPF:" << endl;
-                    ord.ImprimeTudo();
+                    ord.ImprimeOrdenado();
                 break;
 
                 case 3:
-                    ord.OrdenaEndereco();
+                    ord.SelectionSort();
                     cout << "Ordenado por endereco:" << endl;
-                    ord.ImprimeTudo();
+                    ord.ImprimeOrdenado();
+                break;
+
+                case 4:
+                    ord.ImprimeArquivo();
                 break;
 
                 default:
