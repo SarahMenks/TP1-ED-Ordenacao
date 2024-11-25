@@ -17,28 +17,41 @@ int main(){
         cout << "Arquivo normal:" << endl;
         Ordenacao ord(arquivo);
 
-        int opcao;
+        int opcao, atributo;
 
         do{
+            cout << "Escolha uma opcao: (1 = Insertion / 2 = Quick / 3 = Selection)" << endl;
             cin >> opcao;
+
+            if(opcao == 0)
+                break;
+            
+            cout<< "Escolha o atributo: (1 = nome / 2 = cpf / 3 = endereco)" << endl;
+            cin >> atributo;
+            
+            ord.EscolheAtributo(atributo);
 
             switch(opcao){
                 case 1:
-                    ord.OrdenaNome();
+                    ord.InsertionSort();
                     cout << "Ordenado por nome:" << endl;
-                    ord.ImprimeTudo();
+                    ord.ImprimeOrdenado();
                 break;
 
                 case 2:
-                    ord.OrdenaCPF(0, (ord.tamanho_lista-1));
-                    cout << "Ordenado por CPF:" << endl;
-                    ord.ImprimeTudo();
+                    ord.QuickSort(0, (ord.tamanho_lista-1));
+                    cout << "Ordenado pelo Quick:" << endl;
+                    ord.ImprimeOrdenado();
                 break;
 
                 case 3:
-                    ord.OrdenaEndereco();
-                    cout << "Ordenado por endereco:" << endl;
-                    ord.ImprimeTudo();
+                    ord.SelectionSort();
+                    cout << "Ordenado pelo Selection:" << endl;
+                    ord.ImprimeOrdenado();
+                break;
+
+                case 4:
+                    ord.ImprimeArquivo();
                 break;
 
                 default:

@@ -8,12 +8,17 @@ Ordenacao::Ordenacao(ifstream &arquivo){
 
         getline(arquivo, tamanho_str);
         this->tamanho_lista = stoi(tamanho_str, nullptr, 10);
-
+        
+        this->indices = new int[this->tamanho_lista];
+        ResetIndices();
+        
         this->p = new Pessoa[this->tamanho_lista];
         CriaPessoas(arquivo);
 }
 
 Ordenacao::~Ordenacao(){
+    delete[] indices;
+    
     delete[] p;
 }
 
@@ -42,7 +47,7 @@ void Ordenacao::CriaPessoas(ifstream &arquivo){
             else
                 break;
         }
-        p[numPessoa].cpf = stoi(caracteristica, nullptr, 10);
+        p[numPessoa].cpf = caracteristica;
 
         caracteristica = "";
         for(i+=1 ; i < linha.size() ; i++){
@@ -67,69 +72,34 @@ void Ordenacao::CriaPessoas(ifstream &arquivo){
         numPessoa++;
     }
 
-    ImprimeTudo();
+    ImprimeArquivo();
 }
 
-void Ordenacao::OrdenaNome(){
-    //implementação do insertionsort
-    int indice;
-    string nome_aux;
-    Pessoa aux;
+void Ordenacao::InsertionSort(){
+    int posicao = 0;
+    int indice_aux = 0;
+    string aux = "";
 
     for(int i = 1 ; i < this->tamanho_lista ; i++){
         //considera o elemento anterior como ordenado
-        aux = this->p[i];
-        nome_aux = this->p[i].nome;
-        indice = (i-1);
+        indice_aux = indices[i];
+        aux = RetornaChave(indice_aux);
+
+        posicao = (i-1);
 
         //se o elemento i for menor que um elemento anterior, troca os dois
-        while(indice >= 0 && nome_aux < this->p[indice].nome){
-            this->p[indice+1] = this->p[indice];
-            
-            indice--;
+        while(posicao >= 0 && aux < RetornaChave(indices[posicao])){
+            this->indices[posicao+1] = indices[posicao];
+            posicao--;
         }
 
-        //o loop acima sobrescreve a variavel p[indice+1]. É necessário reatribuir o valor
-        this->p[indice+1] = aux;
+        //o loop acima sobrescreve a variavel indices[posicao+1]. É necessário reatribuir o valor
+        this->indices[posicao+1] = indice_aux;
     }
 }
 
-void Ordenacao::OrdenaCPF(int inicio, int fim){
-    if(inicio >= fim)
-        return;
-
-    //implementação do quick sort com mediana de 3
-    
-    int esquerda = inicio, direita = fim;
-
-    int pivo = media3(p[inicio].cpf, p[(inicio+fim)/2].cpf, p[fim].cpf);
-
-    while(esquerda <= direita){
-        while(p[esquerda].cpf < pivo)
-            (esquerda)++;
-        
-        while(p[direita].cpf > pivo)
-            (direita)--;
-
-        if(esquerda <= direita){
-            Pessoa temp = p[esquerda];
-            p[esquerda] = p[direita];
-            p[direita] = temp;
-            
-            (esquerda)++;
-            (direita)--;
-        }
-    }
-
-    if(inicio < direita)
-        OrdenaCPF(inicio, direita);
-    
-    if(esquerda < fim)
-        OrdenaCPF(esquerda, fim);
-
-}
-
-int Ordenacao::media3(int a, int b, int c){
+string media3(string a, string b, string c){
+    //media de 3 strings, para o pivo do quicksort
     if(a < b){
         if(b < c) //a b c
             return b;
@@ -152,30 +122,107 @@ int Ordenacao::media3(int a, int b, int c){
     }
 }
 
-void Ordenacao::OrdenaEndereco(){
+void Ordenacao::QuickSort(int inicio, int fim){
+    if(inicio >= fim)
+        return;
 
-    //implementação do selection sort
+    //implementação do quick sort com mediana de 3    
+    int esquerda = inicio, direita = fim;
+
+    string pivo = media3(RetornaChave(indices[inicio]), RetornaChave(indices[(inicio+fim)/2]), RetornaChave(indices[fim]));
+
+    while(esquerda <= direita){
+        while(RetornaChave(indices[esquerda]) < pivo)
+            (esquerda)++;
+        
+        while(RetornaChave(indices[direita]) > pivo)
+            (direita)--;
+
+        if(esquerda <= direita){
+            int temp = indices[esquerda];
+            indices[esquerda] = indices[direita];
+            indices[direita] = temp;
+            
+            (esquerda)++;
+            (direita)--;
+        }
+    }
+
+    if(inicio < direita)
+        QuickSort(inicio, direita);
+    
+    if(esquerda < fim)
+        QuickSort(esquerda, fim);
+
+}
+
+void Ordenacao::SelectionSort(){
     for(int i = 0 ; i < (this->tamanho_lista - 1) ; i++){
         int indice_menor_num = i;
 
         //busca a posicao do menor numero
         for(int j = (i+1) ; j < this->tamanho_lista ; j++){
-            if(p[j].endereco < p[indice_menor_num].endereco)
+            if(RetornaChave(this->indices[j]) < RetornaChave(this->indices[indice_menor_num]))
                 indice_menor_num = j;
         }
 
-        //troca os valores
+        //se o menor numero nao for o atual, troca
         if(indice_menor_num != i){
-            Pessoa temp = p[i];
-            p[i] = p[indice_menor_num];
-            p[indice_menor_num] = temp;
+            int temp = indices[i];
+            indices[i] = indices[indice_menor_num];
+            indices[indice_menor_num] = temp;
         }
     }
 }
 
-void Ordenacao::ImprimeTudo(){
+void Ordenacao::ImprimeArquivo(){
+    cout << "Lista de pessoas:" << endl;
     cout << "====================" << endl;
-    for (int j = 0; j < this->tamanho_lista; j++) {
-        this->p[j].imprimePessoa();
+    for(int i = 0 ; i < this->tamanho_lista ; i++){
+        this->p[i].imprimePessoa();
     }
+}
+
+void Ordenacao::ImprimeOrdenado(){
+    cout << "Lista de pessoas ordenada:" << endl;
+    cout << "====================" << endl;
+    for (int i = 0 ; i < this->tamanho_lista ; i++){
+        this->p[indices[i]].imprimePessoa();
+    }
+}
+
+void Ordenacao::ResetIndices(){
+    for(int i = 0 ; i < this->tamanho_lista ; i++)
+        this->indices[i] = i;
+}
+
+void Ordenacao::EscolheAtributo(int opcao){
+    //se o atributo escolhido for invalido, encerra o programa
+    try{
+        if(opcao < 1 || opcao > 3)
+            throw "Atributo invalido";
+    }
+    catch(const char* msg){
+        cerr << msg << endl;
+        exit(1);
+    }
+    
+    this->atributo = opcao;
+}
+
+string Ordenacao::RetornaChave(int posicao){
+    switch(this->atributo){
+        case 1:
+            return this->p[posicao].nome;
+        break;
+
+        case 2:
+            return this->p[posicao].cpf;
+        break;
+
+        case 3:
+            return this->p[posicao].endereco;
+        break;
+    }
+
 }

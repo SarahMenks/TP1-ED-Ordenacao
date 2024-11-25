@@ -8,20 +8,25 @@
 struct Ordenacao{
 
     int tamanho_lista;
-    Pessoa *p;
+    Pessoa *p; 
+    int *indices; //indice ordenado das pessoas
+    int atributo; //atributo a ser ordenado (nome, cpf ou endereco)
 
     Ordenacao(std::ifstream &arquivo);
     ~Ordenacao();
     void CriaPessoas(std::ifstream &arquivo);
 
-    void OrdenaNome(); //Insertion
+    void InsertionSort(); 
     
-    void OrdenaCPF(int inicio, int fim); //Quick
-    int media3(int a, int b, int c);
+    void QuickSort(int inicio, int fim);
     
-    void OrdenaEndereco(); //Selection
+    void SelectionSort(); 
 
-    void ImprimeTudo();
+    void ImprimeArquivo();
+    void ImprimeOrdenado();
+    void ResetIndices();
+    void EscolheAtributo(int opcao);
+    std::string RetornaChave(int posicao); //retorna qual chave sera ordenada
 };
 
 #endif
