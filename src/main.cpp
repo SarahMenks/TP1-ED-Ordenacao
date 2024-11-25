@@ -17,16 +17,21 @@ int main(){
         cout << "Arquivo normal:" << endl;
         Ordenacao ord(arquivo);
 
-        int opcao;
+        int opcao, atributo;
 
         do{
+            cout << "Escolha uma opcao: (1 = Insertion / 2 = Quick / 3 = Selection)" << endl;
             cin >> opcao;
 
-            switch(opcao){
-                case 0:
-                    break;
+            if(opcao == 0)
                 break;
+            
+            cout<< "Escolha o atributo: (1 = nome / 2 = cpf / 3 = endereco)" << endl;
+            cin >> atributo;
+            
+            ord.EscolheAtributo(atributo);
 
+            switch(opcao){
                 case 1:
                     ord.InsertionSort();
                     cout << "Ordenado por nome:" << endl;
@@ -35,13 +40,13 @@ int main(){
 
                 case 2:
                     ord.QuickSort(0, (ord.tamanho_lista-1));
-                    cout << "Ordenado por CPF:" << endl;
+                    cout << "Ordenado pelo Quick:" << endl;
                     ord.ImprimeOrdenado();
                 break;
 
                 case 3:
                     ord.SelectionSort();
-                    cout << "Ordenado por endereco:" << endl;
+                    cout << "Ordenado pelo Selection:" << endl;
                     ord.ImprimeOrdenado();
                 break;
 

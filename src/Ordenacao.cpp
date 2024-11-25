@@ -47,7 +47,7 @@ void Ordenacao::CriaPessoas(ifstream &arquivo){
             else
                 break;
         }
-        p[numPessoa].cpf = stoi(caracteristica, nullptr, 10);
+        p[numPessoa].cpf = caracteristica;
 
         caracteristica = "";
         for(i+=1 ; i < linha.size() ; i++){
@@ -76,63 +76,30 @@ void Ordenacao::CriaPessoas(ifstream &arquivo){
 }
 
 void Ordenacao::InsertionSort(){
-    int posicao;
-    string nome_aux;
-    int aux;
+    int posicao = 0;
+    int indice_aux = 0;
+    string aux = "";
 
     for(int i = 1 ; i < this->tamanho_lista ; i++){
         //considera o elemento anterior como ordenado
-        aux = this->indices[i];
-        nome_aux = this->p[indices[i]].nome;
+        indice_aux = indices[i];
+        aux = RetornaChave(indice_aux);
+
         posicao = (i-1);
 
         //se o elemento i for menor que um elemento anterior, troca os dois
-        while(posicao >= 0 && nome_aux < this->p[indices[posicao]].nome){
+        while(posicao >= 0 && aux < RetornaChave(indices[posicao])){
             this->indices[posicao+1] = indices[posicao];
-            
             posicao--;
         }
 
         //o loop acima sobrescreve a variavel indices[posicao+1]. É necessário reatribuir o valor
-        this->indices[posicao+1] = aux;
+        this->indices[posicao+1] = indice_aux;
     }
 }
 
-void Ordenacao::QuickSort(int inicio, int fim){
-    if(inicio >= fim)
-        return;
-
-    //implementação do quick sort com mediana de 3    
-    int esquerda = inicio, direita = fim;
-
-    int pivo = media3(p[indices[inicio]].cpf, p[indices[(inicio+fim)/2]].cpf, p[indices[fim]].cpf);
-
-    while(esquerda <= direita){
-        while(p[indices[esquerda]].cpf < pivo)
-            (esquerda)++;
-        
-        while(p[indices[direita]].cpf > pivo)
-            (direita)--;
-
-        if(esquerda <= direita){
-            int temp = indices[esquerda];
-            indices[esquerda] = indices[direita];
-            indices[direita] = temp;
-            
-            (esquerda)++;
-            (direita)--;
-        }
-    }
-
-    if(inicio < direita)
-        QuickSort(inicio, direita);
-    
-    if(esquerda < fim)
-        QuickSort(esquerda, fim);
-
-}
-
-int Ordenacao::media3(int a, int b, int c){
+string media3(string a, string b, string c){
+    //media de 3 strings, para o pivo do quicksort
     if(a < b){
         if(b < c) //a b c
             return b;
@@ -155,13 +122,47 @@ int Ordenacao::media3(int a, int b, int c){
     }
 }
 
+void Ordenacao::QuickSort(int inicio, int fim){
+    if(inicio >= fim)
+        return;
+
+    //implementação do quick sort com mediana de 3    
+    int esquerda = inicio, direita = fim;
+
+    string pivo = media3(RetornaChave(indices[inicio]), RetornaChave(indices[(inicio+fim)/2]), RetornaChave(indices[fim]));
+
+    while(esquerda <= direita){
+        while(RetornaChave(indices[esquerda]) < pivo)
+            (esquerda)++;
+        
+        while(RetornaChave(indices[direita]) > pivo)
+            (direita)--;
+
+        if(esquerda <= direita){
+            int temp = indices[esquerda];
+            indices[esquerda] = indices[direita];
+            indices[direita] = temp;
+            
+            (esquerda)++;
+            (direita)--;
+        }
+    }
+
+    if(inicio < direita)
+        QuickSort(inicio, direita);
+    
+    if(esquerda < fim)
+        QuickSort(esquerda, fim);
+
+}
+
 void Ordenacao::SelectionSort(){
     for(int i = 0 ; i < (this->tamanho_lista - 1) ; i++){
         int indice_menor_num = i;
 
         //busca a posicao do menor numero
         for(int j = (i+1) ; j < this->tamanho_lista ; j++){
-            if(p[indices[j]].endereco < p[indices[indice_menor_num]].endereco)
+            if(RetornaChave(this->indices[j]) < RetornaChave(this->indices[indice_menor_num]))
                 indice_menor_num = j;
         }
 
@@ -193,4 +194,35 @@ void Ordenacao::ImprimeOrdenado(){
 void Ordenacao::ResetIndices(){
     for(int i = 0 ; i < this->tamanho_lista ; i++)
         this->indices[i] = i;
+}
+
+void Ordenacao::EscolheAtributo(int opcao){
+    //se o atributo escolhido for invalido, encerra o programa
+    try{
+        if(opcao < 1 || opcao > 3)
+            throw "Atributo invalido";
+    }
+    catch(const char* msg){
+        cerr << msg << endl;
+        exit(1);
+    }
+    
+    this->atributo = opcao;
+}
+
+string Ordenacao::RetornaChave(int posicao){
+    switch(this->atributo){
+        case 1:
+            return this->p[posicao].nome;
+        break;
+
+        case 2:
+            return this->p[posicao].cpf;
+        break;
+
+        case 3:
+            return this->p[posicao].endereco;
+        break;
+    }
+
 }
