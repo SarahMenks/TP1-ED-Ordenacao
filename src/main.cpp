@@ -4,63 +4,80 @@
 
 using namespace std;
 
-int main(){
+void parse_args(int argc,char *argv[]){
+    //argc deve receber o nome do arquivo xcvs, a opcao de ordenacao e o atributo a ser ordenado
+    if(argc < 4){
+        cout << "Faltam argumentos" << endl;
+        exit(1);
+    }
+    if(argc > 4){
+        cout << "Argumentos a mais" << endl;
+        exit(1);
+    }
+
+    //se o atributo escolhido for invalido, encerra o programa
+    try{
+        if(*argv[2] != 'n' && *argv[2] != 'c' && *argv[2] != 'e')
+            throw "Atributo invalido";
+    }
+    catch(const char* msg){
+        cerr << msg << endl;
+        exit(1);
+    }
+
+    try{
+        if(*argv[3] != 'q' && *argv[3] != 'i' && *argv[2] != 's' && *argv[2] != 'p')
+            throw "Algoritmo de ordenação invalido";
+    }
+    catch(const char* msg){
+        cerr << msg << endl;
+        exit(1);
+    }
+}
+
+int main(int argc, char *argv[]){
+    //argv[1] é o nome do arquivo, argv[2] é o atributo a ser ordenado, argv[3] é a opção de ordenação
+
+    //confere a entrada
+    parse_args(argc, argv);
+
     //abre o arquivo e cria uma "pessoa"
-    ifstream arquivo("entrada.xcsv");
+    ifstream arquivo(argv[1]);
 
     if (!(arquivo.is_open())){
         cout << "Cannot open file" << endl;
-        return 1;
+        exit(1);
     }
     else {        
         
-        cout << "Arquivo normal:" << endl;
         Ordenacao ord(arquivo);
-
-        int opcao, atributo;
-
-        do{
-            cout << "Escolha uma opcao: (1 = Insertion / 2 = Quick / 3 = Selection)" << endl;
-            cin >> opcao;
-
-            if(opcao == 0)
-                break;
-            
-            cout<< "Escolha o atributo: (1 = nome / 2 = cpf / 3 = endereco)" << endl;
-            cin >> atributo;
-            
-            ord.EscolheAtributo(atributo);
-
-            switch(opcao){
-                case 1:
-                    ord.InsertionSort();
-                    cout << "Ordenado por nome:" << endl;
-                    ord.ImprimeOrdenado();
-                break;
-
-                case 2:
-                    ord.QuickSort(0, (ord.tamanho_lista-1));
-                    cout << "Ordenado pelo Quick:" << endl;
-                    ord.ImprimeOrdenado();
-                break;
-
-                case 3:
-                    ord.SelectionSort();
-                    cout << "Ordenado pelo Selection:" << endl;
-                    ord.ImprimeOrdenado();
-                break;
-
-                case 4:
-                    ord.ImprimeArquivo();
-                break;
-
-                default:
-                    cout << "Opcao invalida" << endl;
-                break;
-            }
-            
-        } while(opcao != 0);
+        //cout << "Arquivo normal:" << endl;
+        //ord.ImprimeArquivo();
         
+        ord.EscolheAtributo(*argv[2]);
+
+        switch(*argv[3]){
+            case 'i':
+                ord.InsertionSort();
+            break;
+
+            case 'q':
+                ord.QuickSort(0, (ord.tamanho_lista-1));
+            break;
+
+            case 's':
+                ord.SelectionSort();
+            break;
+
+            case 'p':
+                ord.ImprimeArquivo();
+            break;
+
+            default:
+                cout << "Opcao invalida" << endl;
+            break;
+        }
+                    
         //fecha o arquivo
         arquivo.close();
     }

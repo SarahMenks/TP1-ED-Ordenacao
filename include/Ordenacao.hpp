@@ -10,7 +10,7 @@ struct Ordenacao{
     int tamanho_lista;
     Pessoa *p; 
     int *indices; //indice ordenado das pessoas
-    int atributo; //atributo a ser ordenado (nome, cpf ou endereco)
+    char atributo; //atributo a ser ordenado (nome, cpf ou endereco)
 
     Ordenacao(std::ifstream &arquivo);
     ~Ordenacao();
@@ -25,7 +25,7 @@ struct Ordenacao{
     void ImprimeArquivo();
     void ImprimeOrdenado();
     void ResetIndices();
-    void EscolheAtributo(int opcao);
+    void EscolheAtributo(char atr);
     std::string RetornaChave(int posicao); //retorna qual chave sera ordenada
 };
 

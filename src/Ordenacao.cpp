@@ -4,7 +4,12 @@ using namespace std;
 
 Ordenacao::Ordenacao(ifstream &arquivo){
         //lê a primeira linha do arquivo que contem o tamanho do vetor de pessoas
-        string tamanho_str;
+        string aux = "", tamanho_str = "";
+        
+        //não vamos usar as 5 primeiras linhas do arquivo
+        for(int i = 0 ; i < 5 ; i++){
+            getline(arquivo, aux);
+        }
 
         getline(arquivo, tamanho_str);
         this->tamanho_lista = stoi(tamanho_str, nullptr, 10);
@@ -71,8 +76,6 @@ void Ordenacao::CriaPessoas(ifstream &arquivo){
 
         numPessoa++;
     }
-
-    ImprimeArquivo();
 }
 
 void Ordenacao::InsertionSort(){
@@ -196,10 +199,10 @@ void Ordenacao::ResetIndices(){
         this->indices[i] = i;
 }
 
-void Ordenacao::EscolheAtributo(int opcao){
+void Ordenacao::EscolheAtributo(char atr){
     //se o atributo escolhido for invalido, encerra o programa
     try{
-        if(opcao < 1 || opcao > 3)
+        if(atr != 'n' && atr != 'c' && atr != 'e')
             throw "Atributo invalido";
     }
     catch(const char* msg){
@@ -207,22 +210,26 @@ void Ordenacao::EscolheAtributo(int opcao){
         exit(1);
     }
     
-    this->atributo = opcao;
+    this->atributo = atr;
 }
 
 string Ordenacao::RetornaChave(int posicao){
     switch(this->atributo){
-        case 1:
+        case 'n':
             return this->p[posicao].nome;
         break;
 
-        case 2:
+        case 'c':
             return this->p[posicao].cpf;
         break;
 
-        case 3:
+        case 'e':
             return this->p[posicao].endereco;
         break;
+
+        default:
+            cerr << "Atributo invalido" << endl;
+            exit(1);
     }
 
 }
