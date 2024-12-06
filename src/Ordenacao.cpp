@@ -1,4 +1,5 @@
 #include "Ordenacao.hpp"
+#include <chrono>
 
 using namespace std;
 
@@ -125,7 +126,9 @@ string media3(string a, string b, string c){
     }
 }
 
-void Ordenacao::QuickSort(int inicio, int fim){
+int count = 0;
+
+void Ordenacao::QuickSort(int inicio, int fim, std::chrono::steady_clock::time_point start){
     if(inicio >= fim)
         return;
 
@@ -135,11 +138,21 @@ void Ordenacao::QuickSort(int inicio, int fim){
     string pivo = media3(RetornaChave(indices[inicio]), RetornaChave(indices[(inicio+fim)/2]), RetornaChave(indices[fim]));
 
     while(esquerda <= direita){
-        while(RetornaChave(indices[esquerda]) < pivo)
+        if(count % 160 == 0){
+                auto end = std::chrono::steady_clock::now();  
+                auto time = (end - start);
+                cout << time.count() << ","; 
+            }
+
+        count++;
+
+        while(RetornaChave(indices[esquerda]) < pivo){
             (esquerda)++;
+        }
         
-        while(RetornaChave(indices[direita]) > pivo)
-            (direita)--;
+        while(RetornaChave(indices[direita]) > pivo){
+           (direita)--;
+        }
 
         if(esquerda <= direita){
             int temp = indices[esquerda];
@@ -149,17 +162,16 @@ void Ordenacao::QuickSort(int inicio, int fim){
             (esquerda)++;
             (direita)--;
         }
-    }
+    } 
 
     if(inicio < direita)
-        QuickSort(inicio, direita);
+        QuickSort(inicio, direita,start);
     
     if(esquerda < fim)
-        QuickSort(esquerda, fim);
-
+        QuickSort(esquerda, fim, start);
 }
 
-void Ordenacao::SelectionSort(){
+void Ordenacao::SelectionSort(){    
     for(int i = 0 ; i < (this->tamanho_lista - 1) ; i++){
         int indice_menor_num = i;
 
@@ -175,6 +187,7 @@ void Ordenacao::SelectionSort(){
             indices[i] = indices[indice_menor_num];
             indices[indice_menor_num] = temp;
         }
+
     }
 }
 
@@ -186,11 +199,10 @@ void Ordenacao::ImprimeArquivo(){
     }
 }
 
-void Ordenacao::ImprimeOrdenado(){
-    cout << "Lista de pessoas ordenada:" << endl;
-    cout << "====================" << endl;
+void Ordenacao::LocalidadeReferencia(){
     for (int i = 0 ; i < this->tamanho_lista ; i++){
-        this->p[indices[i]].imprimePessoa();
+        if(i % 10 == 0)
+            cout << &p[indices[i]] << ",";
     }
 }
 
@@ -199,10 +211,10 @@ void Ordenacao::ResetIndices(){
         this->indices[i] = i;
 }
 
-void Ordenacao::EscolheAtributo(char atr){
+void Ordenacao::EscolheAtributo(int atr){
     //se o atributo escolhido for invalido, encerra o programa
     try{
-        if(atr != 'n' && atr != 'c' && atr != 'e')
+        if(atr != 0 && atr != 1 && atr != 2)
             throw "Atributo invalido";
     }
     catch(const char* msg){
@@ -210,7 +222,12 @@ void Ordenacao::EscolheAtributo(char atr){
         exit(1);
     }
     
-    this->atributo = atr;
+    if(atr == 0)
+        this->atributo = 'n';
+    else if(atr == 1)
+        this->atributo = 'c';
+    else
+        this->atributo = 'e';
 }
 
 string Ordenacao::RetornaChave(int posicao){

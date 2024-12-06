@@ -4,6 +4,7 @@
 #include "Pessoa.hpp"
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 struct Ordenacao{
 
@@ -18,14 +19,14 @@ struct Ordenacao{
 
     void InsertionSort(); 
     
-    void QuickSort(int inicio, int fim);
+    void QuickSort(int inicio, int fim, std::chrono::steady_clock::time_point start);
     
     void SelectionSort(); 
 
     void ImprimeArquivo();
-    void ImprimeOrdenado();
+    void LocalidadeReferencia();
     void ResetIndices();
-    void EscolheAtributo(char atr);
+    void EscolheAtributo(int atr);
     std::string RetornaChave(int posicao); //retorna qual chave sera ordenada
 };
 
